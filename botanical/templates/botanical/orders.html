@@ -1,0 +1,55 @@
+{% extends 'botanical/base.html' %}
+
+{% block title %}My Orders - SanJoa Earth Care{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-serif font-bold text-[#133e24] mb-8">My Orders</h1>
+    
+    {% if orders %}
+        <div class="space-y-6">
+            {% for order in orders %}
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-[#133e24]">Order #{{ order.order_number }}</h3>
+                        <p class="text-gray-600">{{ order.created_at|date:"F d, Y" }}</p>
+                    </div>
+                    <span class="px-4 py-2 rounded-lg font-semibold
+                        {% if order.status == 'Delivered' %}bg-green-100 text-green-800
+                        {% elif order.status == 'Shipped' %}bg-blue-100 text-blue-800
+                        {% elif order.status == 'Processing' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ order.status }}
+                    </span>
+                </div>
+                
+                <div class="border-t pt-4">
+                    <div class="space-y-2">
+                        {% for item in order.items.all %}
+                        <div class="flex justify-between">
+                            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                            <span>₹{{ item.subtotal }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="border-t mt-4 pt-4">
+                        <div class="flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span class="text-[#133e24]">₹{{ order.final_total }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-white rounded-xl">
+            <p class="text-gray-500 text-lg mb-4">You haven't placed any orders yet.</p>
+            <a href="{% url 'botanical:home' %}" class="bg-[#133e24] text-white px-6 py-3 rounded-lg hover:bg-[#0f3119]">
+                Start Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

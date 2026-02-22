@@ -1,0 +1,185 @@
+{% extends 'botanical/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-emerald-50 to-white py-20 px-6">
+    <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold text-[#133e24] mb-6">
+            Save Your Waste<br>To Make Best
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+            Premium botanical marketplace and sustainable earth care solutions for conscious gardeners.
+        </p>
+        <div class="flex gap-4 justify-center flex-wrap">
+            <a href="#products" class="bg-[#133e24] text-white px-8 py-3 rounded-lg hover:bg-[#0f3119] transition-colors">
+                Shop Now
+            </a>
+            <a href="{% url 'botanical:plant_doctor' %}" class="border-2 border-[#133e24] text-[#133e24] px-8 py-3 rounded-lg hover:bg-[#133e24] hover:text-white transition-colors">
+                AI Plant Doctor
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products -->
+{% if featured_products %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-3xl font-serif font-bold text-[#133e24] mb-8">Featured Products</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for product in featured_products %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+            <a href="{% url 'botanical:product_detail' product.id %}">
+                <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <h3 class="font-semibold text-lg mb-2">{{ product.name }}</h3>
+                {% if product.scientific_name %}
+                    <p class="text-sm text-gray-500 italic mb-2">{{ product.scientific_name }}</p>
+                {% endif %}
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold text-[#133e24]">₹{{ product.price }}</span>
+                    <a href="{% url 'botanical:product_detail' product.id %}" class="bg-[#133e24] text-white px-4 py-2 rounded-lg hover:bg-[#0f3119] transition-colors">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Category Filter -->
+<div id="products" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'botanical:home' %}?category=All" 
+           class="px-6 py-2 rounded-lg {% if current_category == 'All' %}bg-[#133e24] text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %} transition-colors">
+            All
+        </a>
+        {% for value, label in categories %}
+        <a href="{% url 'botanical:home' %}?category={{ value }}" 
+           class="px-6 py-2 rounded-lg {% if current_category == value %}bg-[#133e24] text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %} transition-colors">
+            {{ label }}
+        </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Search Form -->
+    <form method="get" class="mb-8">
+        <div class="flex gap-4">
+            <input type="text" 
+                   name="search" 
+                   value="{{ search_query }}" 
+                   placeholder="Search products..." 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#133e24]">
+            <button type="submit" class="bg-[#133e24] text-white px-6 py-2 rounded-lg hover:bg-[#0f3119] transition-colors">
+                Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Products Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover-lift">
+            <a href="{% url 'botanical:product_detail' product.id %}">
+                <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+            </a>
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-base">{{ product.name }}</h3>
+                    <button class="wishlist-btn text-red-500 hover:text-red-600" 
+                            data-product-id="{{ product.id }}"
+                            data-in-wishlist="{% if product.id in wishlist_ids %}true{% else %}false{% endif %}">
+                        <svg class="w-5 h-5 {% if product.id in wishlist_ids %}fill-current{% else %}stroke-current fill-none{% endif %}" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xl font-bold text-[#133e24]">₹{{ product.price }}</span>
+                    <a href="{% url 'botanical:product_detail' product.id %}" 
+                       class="bg-[#133e24] text-white px-3 py-1 text-sm rounded-lg hover:bg-[#0f3119] transition-colors">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+    <div class="flex justify-center gap-2 mt-8">
+        {% if products.has_previous %}
+            <a href="?page={{ products.previous_page_number }}{% if current_category != 'All' %}&category={{ current_category }}{% endif %}" 
+               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</a>
+        {% endif %}
+        
+        <span class="px-4 py-2">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+        
+        {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}{% if current_category != 'All' %}&category={{ current_category }}{% endif %}" 
+               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-16">
+        <p class="text-gray-500 text-lg">No products found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Wishlist functionality
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            {% if not user.is_authenticated %}
+                window.location.href = '{% url "botanical:login" %}';
+                return;
+            {% endif %}
+            
+            const productId = this.dataset.productId;
+            const isInWishlist = this.dataset.inWishlist === 'true';
+            
+            try {
+                const response = await fetch('{% url "botanical:api_wishlist_toggle" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'added') {
+                    this.dataset.inWishlist = 'true';
+                    this.querySelector('svg').classList.add('fill-current');
+                    this.querySelector('svg').classList.remove('fill-none');
+                } else {
+                    this.dataset.inWishlist = 'false';
+                    this.querySelector('svg').classList.remove('fill-current');
+                    this.querySelector('svg').classList.add('fill-none');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+</script>
+{% endblock %}

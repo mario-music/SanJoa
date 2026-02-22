@@ -1,0 +1,20 @@
+{% extends 'botanical/base.html' %}
+{% block content %}
+<h1>Membership Plans</h1>
+{% if current_membership %}
+<p>Current membership: <strong>{{ current_membership }}</strong></p>
+{% endif %}
+<div>
+  {% for plan in plans %}
+    <div style="border:1px solid #ddd; padding:12px; margin:8px 0;">
+      <h3>{{ plan.tier }}</h3>
+      <p>{{ plan.description }}</p>
+      <p>Monthly: {{ plan.price_monthly }} — Yearly: {{ plan.price_yearly }}</p>
+      <p>Benefits: {% for b in plan.benefits %}{{ b }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+      <form method="get" action="{% url 'botanical:upgrade_membership' plan.id %}">
+        <button type="submit">Choose {{ plan.tier }}</button>
+      </form>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SanJoa Earth Care | Save Your Waste To Make Best{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #fcfdfd; 
+            color: #1e293b; 
+            overflow-x: hidden; 
+        }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #133e24; border-radius: 10px; }
+        @keyframes pulse-soft { 
+            0%, 100% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.8; transform: scale(0.98); } 
+        }
+        .animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+        .bg-sanjoa-green { background-color: #133e24; }
+        .text-sanjoa-green { color: #133e24; }
+        .hover-lift { transition: transform 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-4px); }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{% url 'botanical:home' %}" class="flex items-center gap-3">
+                    <div class="bg-[#133e24] p-2 rounded-xl">
+                        <svg viewBox="0 0 100 100" class="h-6 w-6 text-white fill-current">
+                            <path d="M50 70 Q48 75 45 78 M50 72 Q52 77 55 80" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                            <path d="M50 70 L50 50" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M50 60 Q60 55 65 45 Q55 45 50 60 Z" fill="currentColor" />
+                            <path d="M50 55 Q40 50 35 40 Q45 40 50 55 Z" fill="currentColor" />
+                            <path d="M30 65 Q25 75 35 85 Q50 90 65 85 Q75 75 70 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M30 65 L25 60 M70 65 L75 60" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                        </svg>
+                    </div>
+                    <span class="text-xl font-serif font-bold text-[#133e24]">SanJoa Earth Care</span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="{% url 'botanical:home' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Marketplace</a>
+                    <a href="{% url 'botanical:plant_doctor' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">AI Doctor</a>
+                    <a href="{% url 'botanical:about_us' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">About</a>
+                    <a href="{% url 'botanical:join_us' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Join Us</a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'botanical:orders' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Orders</a>
+                        <a href="{% url 'botanical:account' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Account</a>
+                        <a href="{% url 'botanical:logout' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Logout</a>
+                    {% else %}
+                        <a href="{% url 'botanical:login' %}" class="text-gray-700 hover:text-[#133e24] transition-colors">Login</a>
+                        <a href="{% url 'botanical:register' %}" class="bg-[#133e24] text-white px-6 py-2 rounded-lg hover:bg-[#0f3119] transition-colors">Register</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="{% url 'botanical:home' %}" class="block text-gray-700 hover:text-[#133e24]">Marketplace</a>
+                <a href="{% url 'botanical:plant_doctor' %}" class="block text-gray-700 hover:text-[#133e24]">AI Doctor</a>
+                <a href="{% url 'botanical:about_us' %}" class="block text-gray-700 hover:text-[#133e24]">About</a>
+                <a href="{% url 'botanical:join_us' %}" class="block text-gray-700 hover:text-[#133e24]">Join Us</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'botanical:orders' %}" class="block text-gray-700 hover:text-[#133e24]">Orders</a>
+                    <a href="{% url 'botanical:account' %}" class="block text-gray-700 hover:text-[#133e24]">Account</a>
+                    <a href="{% url 'botanical:logout' %}" class="block text-gray-700 hover:text-[#133e24]">Logout</a>
+                {% else %}
+                    <a href="{% url 'botanical:login' %}" class="block text-gray-700 hover:text-[#133e24]">Login</a>
+                    <a href="{% url 'botanical:register' %}" class="block text-gray-700 hover:text-[#133e24]">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            {% for message in messages %}
+                <div class="p-4 mb-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-800{% elif message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-[#133e24] text-white py-16 px-6 mt-20">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+            <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white p-2 rounded-xl">
+                        <svg viewBox="0 0 100 100" class="h-6 w-6 text-[#133e24] fill-current">
+                            <path d="M50 70 Q48 75 45 78 M50 72 Q52 77 55 80" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                            <path d="M50 70 L50 50" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M50 60 Q60 55 65 45 Q55 45 50 60 Z" fill="currentColor" />
+                            <path d="M50 55 Q40 50 35 40 Q45 40 50 55 Z" fill="currentColor" />
+                            <path d="M30 65 Q25 75 35 85 Q50 90 65 85 Q75 75 70 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M30 65 L25 60 M70 65 L75 60" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-serif font-bold">SanJoa Earth Care</span>
+                </div>
+                <p class="text-emerald-100/60 text-sm leading-relaxed max-w-xs">
+                    "Save Your Waste To Make Best" – Leading the charge in sustainable gardening and circular plant care.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-6">Quick Links</h4>
+                <div class="flex flex-col gap-3 text-sm font-medium text-emerald-100/70">
+                    <a href="{% url 'botanical:home' %}" class="hover:text-white transition-colors">Marketplace</a>
+                    <a href="{% url 'botanical:orders' %}" class="hover:text-white transition-colors">My Orders</a>
+                    <a href="{% url 'botanical:sales' %}" class="hover:text-white transition-colors">Sales Dashboard</a>
+                    <a href="{% url 'botanical:plant_doctor' %}" class="hover:text-white transition-colors">AI Doctor</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-6">Community</h4>
+                <div class="flex flex-col gap-3 text-sm font-medium text-emerald-100/70">
+                    <a href="{% url 'botanical:about_us' %}" class="hover:text-white transition-colors">Our Story</a>
+                    <a href="{% url 'botanical:join_us' %}" class="hover:text-white transition-colors">Join Community</a>
+                    <p class="mt-4">hello@sanjoaearthcare.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 text-center">
+            <p class="text-[10px] font-medium text-white/20 uppercase tracking-widest">&copy; 2024 SanJoa Earth Care. Handcrafted for a better planet.</p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% extends 'botanical/base.html' %}
+{% block content %}
+<h1>Upgrade to {{ plan.tier }}</h1>
+<p>{{ plan.description }}</p>
+<p>Monthly: {{ plan.price_monthly }} — Yearly: {{ plan.price_yearly }}</p>
+<form method="post" action="">
+  {% csrf_token %}
+  <label>
+    <input type="radio" name="billing_cycle" value="Monthly" checked> Monthly
+  </label>
+  <label>
+    <input type="radio" name="billing_cycle" value="Yearly"> Yearly
+  </label>
+  <br><br>
+  <button type="submit">Confirm Purchase</button>
+</form>
+{% endblock %}

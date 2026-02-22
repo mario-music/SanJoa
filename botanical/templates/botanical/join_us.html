@@ -1,0 +1,78 @@
+{% extends 'botanical/base.html' %}
+
+{% block title %}Join Us - SanJoa Earth Care{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-serif font-bold text-[#133e24] mb-6 text-center">Join Our Community</h1>
+    <p class="text-xl text-gray-600 text-center mb-12">
+        Become part of a growing community of conscious gardeners and earth care enthusiasts.
+    </p>
+    
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <h2 class="text-2xl font-serif font-bold text-[#133e24] mb-4">Why Join?</h2>
+            <ul class="space-y-3">
+                <li>✅ Exclusive discounts on all products</li>
+                <li>✅ Early access to new arrivals</li>
+                <li>✅ Free AI plant diagnosis</li>
+                <li>✅ Monthly gardening tips and guides</li>
+                <li>✅ Connect with fellow gardeners</li>
+            </ul>
+        </div>
+        
+        <div class="bg-emerald-50 rounded-2xl p-8">
+            <h2 class="text-2xl font-serif font-bold text-[#133e24] mb-4">Newsletter</h2>
+            <p class="text-gray-700 mb-4">Get the latest updates, tips, and exclusive offers delivered to your inbox.</p>
+            
+            <form id="newsletter-form" class="space-y-4">
+                <input type="text" 
+                       id="newsletter-name"
+                       placeholder="Your Name" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <input type="email" 
+                       id="newsletter-email"
+                       placeholder="Your Email" 
+                       required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <button type="submit" 
+                        class="w-full bg-[#133e24] text-white py-2 rounded-lg hover:bg-[#0f3119]">
+                    Subscribe
+                </button>
+            </form>
+            <div id="newsletter-message" class="mt-4 hidden"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('newsletter-name').value;
+        const email = document.getElementById('newsletter-email').value;
+        
+        try {
+            const response = await fetch('{% url "botanical:api_newsletter_subscribe" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email })
+            });
+            
+            const data = await response.json();
+            const messageDiv = document.getElementById('newsletter-message');
+            messageDiv.classList.remove('hidden');
+            messageDiv.textContent = data.message;
+            messageDiv.className = 'mt-4 p-4 rounded-lg ' + (data.status === 'subscribed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800');
+            
+            if (data.status === 'subscribed') {
+                document.getElementById('newsletter-form').reset();
+            }
+        } catch (error) {
+            alert('Error subscribing. Please try again.');
+        }
+    });
+</script>
+{% endblock %}
